@@ -1,0 +1,25 @@
+name: Magento2-Demo
+type: magento2
+docroot: pub
+php_version: "8.3"
+webserver_type: nginx-fpm
+xdebug_enabled: false
+additional_hostnames: []
+additional_fqdns: []
+database:
+    type: mysql
+    version: "8.0"
+use_dns_when_possible: true
+composer_version: "2"
+web_environment: []
+corepack_enable: false
+hooks:
+    post-start:
+        - exec: composer install --no-dev
+        - exec: >
+            if [ ! -e .ddev/db_snapshots/init ]
+              then
+              php bin/n98-magerun2.phar db:import -c gzip .ddev/db_snapshots/db.sql.gz
+              touch .ddev/db_snapshots/init
+            fi
+        - exec: php bin/magento setup:upgrade && php bin/magento index:reindex
