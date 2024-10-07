@@ -17,9 +17,9 @@ hooks:
     post-start:
         - exec: composer install --no-dev
         - exec: >
-            if [ ! -e .ddev/db_snapshots/init ]
+            if [ ! -e .ddev/init-db/imported ]
               then
-              php bin/n98-magerun2.phar db:import -c gzip .ddev/db_snapshots/db.sql.gz
-              touch .ddev/db_snapshots/init
+              php bin/n98-magerun2.phar db:import -c gzip .ddev/init-db/db.sql.gz
+              touch .ddev/init-db/imported
             fi
         - exec: php bin/magento setup:upgrade && php bin/magento index:reindex
